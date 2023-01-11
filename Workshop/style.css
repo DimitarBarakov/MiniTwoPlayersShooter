@@ -22,10 +22,37 @@ body{
     text-align: center;
     padding: 30px;
 }
-.game-score{
+.game-start:hover{
+    cursor: pointer;
+}
+.choosing-names{
+    position: absolute;
+    width: 30%;
+    background-color: greenyellow;
+    border-radius: 30px;
+    top: 200px;
+    left: 35%;
+    z-index: 1;
+    text-align: center;
+    padding: 30px;
+    align-content: center;
+}
+.choosing-names input{
+    width: 400px;
+    height: 38px;
+    display: block;
+    border-radius: 20px;
+    margin: 10px 0px;
+    background: lightgray;
+}
+.players-health{
     background-color: black;
     color: white;
     text-align: center;
+}
+.players-health p{
+    display: inline-block;
+    margin: 0px;
 }
 .hide{
     display: none;
@@ -34,12 +61,11 @@ body{
     width: 82px;
     height: 100px;
     position: absolute;
-    mix-blend-mode:color-burn;
     background-size: cover;
     z-index: 100;
 }
 .wizard1{
-    background-image: url("images/png-clipart-game-design-shooter-game-unity-two-dimensional-space-unity-2d-game-cartoon.png");
+    background-image: url("images/wizard.png");
 }
 .wizard2{
     background-image: url("images/wizard-rotated.png");

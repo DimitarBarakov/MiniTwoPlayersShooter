@@ -1,10 +1,18 @@
 let gameStart = document.getElementsByClassName('game-start')[0]
 let gameArea = document.getElementsByClassName('game-area')[0]
 let gameOver = document.getElementsByClassName('game-over')[0]
-let gameScore = document.getElementsByClassName('game-score')[0]
-let firstPlayer = document.getElementsByClassName('player-wins')[0]
-let secondPlayer = document.getElementsByClassName('player-wins')[1]
-let points = gameScore.querySelector(".points")
+let gameScore = document.getElementsByClassName('players-health')[0]
+let firstPlayerWinner = document.getElementsByClassName('player-wins')[0]
+let secondPlayerWinner = document.getElementsByClassName('player-wins')[1]
+let firstPlayerHealth = gameScore.querySelector(".first-player-health")
+let secondPlayerHealth = gameScore.querySelector(".second-player-health")
+let firstPlayerName = gameScore.querySelector("#firstPlayerName");
+let secondPlayerName = gameScore.querySelector("#secondPlayerName");
+let choosingNamesSection = document.querySelector('.choosing-names')
+
+let firstPlayerNameInput = document.getElementById('firstPlayerNameInput');
+let secondPlayerNameInput = document.getElementById('secondPlayerNameInput');
+
 
 gameStart.addEventListener('click', onGameStart)
 
@@ -12,6 +20,7 @@ document.addEventListener('keydown', onKeyDown)
 document.addEventListener('keyup', onKeyUp)
 let keys = {};
 let player = {
+    health: 20,
     x:150,
     y:100,
     height: 0,
@@ -19,13 +28,15 @@ let player = {
     lastTimeFiredFireball: 0
 }
 let player2 = {
-    x:750,
+    health: 100,
+    x:1150,
     y:100,
     height: 0,
     width: 0,
     lastTimeFiredFireball: 0
 }
 let game = {
+    damage: 100,
     speed: 2,
     movingMultiplayer: 4,
     fireBallMultiplier: 5,
@@ -38,7 +49,16 @@ let scene = {
     isActiveGame: true
 }
 function onGameStart(){
+    
+    let firstPlayerNameValue = firstPlayerNameInput.value;
+    firstPlayerName.textContent = firstPlayerNameValue;
+    player.name = firstPlayerNameValue;
+
+    let secondPlayerNameValue = secondPlayerNameInput.value;
+    secondPlayerName.textContent = secondPlayerNameValue;
+    player2.name = secondPlayerNameValue;
     gameStart.classList.add('hide')
+    choosingNamesSection.classList.add('hide')
 
     let wizard = document.createElement('div')
     wizard.classList.add('wizard')
@@ -77,19 +97,19 @@ function gameAction(timestamp){
     if (isInAir){
         player.y += game.speed;
     }
-    if (keys.ArrowUp && player.y > 0){
+    if (keys.KeyW && player.y > 0){
         player.y -= game.speed*game.movingMultiplayer;
     }
-    if (keys.ArrowDown && player.y + wizard.offsetHeight < gameArea.offsetHeight){
+    if (keys.KeyS && player.y + wizard.offsetHeight < gameArea.offsetHeight){
         player.y += game.speed*game.movingMultiplayer;
     }
-    if (keys.ArrowLeft && player.x > 0){
+    if (keys.KeyA && player.x > 0){
         player.x -= game.speed*game.movingMultiplayer;
     }
-    if (keys.ArrowRight && player.x + wizard.offsetWidth < gameArea.offsetWidth){
+    if (keys.KeyD && player.x + wizard.offsetWidth < gameArea.offsetWidth/2){
         player.x += game.speed*game.movingMultiplayer;
     }
-    if (keys.Space && timestamp - player.lastTimeFiredFireball > game.fireInterval){
+    if (keys.KeyF && timestamp - player.lastTimeFiredFireball > game.fireInterval){
         player.lastTimeFiredFireball = timestamp;
         wizard.classList.add('wizard-fire-1')
         addFireBall(player,wizard);
@@ -103,19 +123,19 @@ function gameAction(timestamp){
     if (isInAir2){
         player2.y += game.speed;
     }
-    if (keys.KeyW && player2.y > 0){
+    if (keys.ArrowUp && player2.y > 0){
         player2.y -= game.speed*game.movingMultiplayer;
     }
-    if (keys.KeyS && player2.y + wizard2.offsetHeight < gameArea.offsetHeight){
+    if (keys.ArrowDown && player2.y + wizard2.offsetHeight < gameArea.offsetHeight){
         player2.y += game.speed*game.movingMultiplayer;
     }
-    if (keys.KeyA && player2.x > 0){
+    if (keys.ArrowLeft && player2.x > 683){
         player2.x -= game.speed*game.movingMultiplayer;
     }
-    if (keys.KeyD && player2.x + wizard2.offsetWidth < gameArea.offsetWidth){
+    if (keys.ArrowRight && player2.x + wizard2.offsetWidth < gameArea.offsetWidth){
         player2.x += game.speed*game.movingMultiplayer;
     }
-    if (keys.KeyF && timestamp - player2.lastTimeFiredFireball > game.fireInterval){
+    if (keys.Space && timestamp - player2.lastTimeFiredFireball > game.fireInterval){
         player2.lastTimeFiredFireball = timestamp;
         wizard2.classList.add('wizard-fire-2')
         addFireBall(player2,wizard2);
@@ -123,17 +143,6 @@ function gameAction(timestamp){
     }else{
         wizard2.classList.remove('wizard-fire-2')
     }
-
-    // if (timestamp - scene.lastBugSpawn > game.bugSpawnInterval + 5000 * Math.random()){
-    //     let bug = document.createElement('div')
-    //     bug.classList.add('bug')
-    //     bug.x = gameArea.offsetWidth - 60;
-    //     bug.style.left = bug.x + 'px';
-    //     bug.y = Math.random() * (gameArea.offsetHeight - 60);
-    //     bug.style.top = bug.y + 'px'
-    //     gameArea.appendChild(bug)
-    //     scene.lastBugSpawn = timestamp;
-    // }
 
     wizard.style.top = player.y + 'px';
     wizard.style.left = player.x + 'px';
@@ -166,44 +175,20 @@ function gameAction(timestamp){
     fireballs1.forEach(fireball=>{
         if (isCollision(fireball,wizard2)){
             fireball.parentElement.removeChild(fireball)
-            firstPlayerWins();
+            firstPlayerHit();
         }
     })
     fireballs2.forEach(fireball=>{
         if (isCollision(fireball,wizard)){
             fireball.parentElement.removeChild(fireball)
-            secondPlayerWins();
+            secondPlayerHit();
         }
     })
     
-    // let bugs = document.querySelectorAll('.bug')
-    // bugs.forEach(bug=>{
-    //     bug.x -= game.speed * 3
-    //     bug.style.left = bug.x + 'px'
-
-    //     if (bug.x + bug.offsetWidth < 0){
-    //         bug.parentElement.removeChild(bug)
-    //     }
-    // })
-
-    // bugs.forEach(bug=>{
-    //     if (isCollision(wizard,bug)){
-    //         gameOverAction();
-    //     }
-    //     fireballs.forEach(fireball=>{
-    //         if (isCollision(fireball,bug)){
-    //             bug.parentElement.removeChild(bug)
-    //             fireball.parentElement.removeChild(fireball)
-    //         }
-    //     })
-    // })
-    scene.score ++;
-    points.textContent = scene.score;
 
     if (scene.isActiveGame){
         window.requestAnimationFrame(gameAction)
     }
-    //window.requestAnimationFrame(gameAction)
 }
 
 function addFireBall(player,wizard){
@@ -235,11 +220,21 @@ function gameOverAction(){
     scene.isActiveGame = false;
     gameOver.classList.remove('hide')
 }
-function firstPlayerWins(){
-    scene.isActiveGame = false;
-    firstPlayer.classList.remove('hide')
+function firstPlayerHit(){
+    player2.health -= game.damage;
+    secondPlayerHealth.textContent = player2.health
+    if(player2.health === 0){
+        scene.isActiveGame = false;
+        firstPlayerWinner.textContent = player.name + " wins !!!"
+        firstPlayerWinner.classList.remove('hide')
+    }
 }
-function secondPlayerWins(){
-    scene.isActiveGame = false;
-    secondPlayer.classList.remove('hide')
+function secondPlayerHit(){
+    player.health -= game.damage;
+    firstPlayerHealth.textContent = player.health
+    if(player.health === 0){
+        scene.isActiveGame = false;
+        secondPlayerWinner.textContent = player2.name + " wins !!!"
+        secondPlayerWinner.classList.remove('hide')
+    }
 }

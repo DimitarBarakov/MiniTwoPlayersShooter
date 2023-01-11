@@ -8,7 +8,14 @@
 <body>
     <div class="game-section">
         <div class="game-start">Press to Play</div>
-        <div class="game-score"><span class="points">0</span> pts.</div>
+        <div class="choosing-names">
+            <input type="text" placeholder="First Player Name:" id="firstPlayerNameInput">
+            <input type="text" placeholder="Second Player Name:" id="secondPlayerNameInput">
+        </div>
+        <div class="players-health">
+            <p><span id="firstPlayerName">P1</span> <span class="first-player-health">100</span>HP</p>
+            <p><span id="secondPlayerName">P2</span> <span class="second-player-health">100</span>HP</p>
+        </div>
         <div class="game-area"></div>
         <div class="game-over hide">Game Over! ;(</div>
         <div class="player-wins hide">First Player Wins!!!</div>
