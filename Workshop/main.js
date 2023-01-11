@@ -2,6 +2,8 @@ let gameStart = document.getElementsByClassName('game-start')[0]
 let gameArea = document.getElementsByClassName('game-area')[0]
 let gameOver = document.getElementsByClassName('game-over')[0]
 let gameScore = document.getElementsByClassName('game-score')[0]
+let firstPlayer = document.getElementsByClassName('player-wins')[0]
+let secondPlayer = document.getElementsByClassName('player-wins')[1]
 let points = gameScore.querySelector(".points")
 
 gameStart.addEventListener('click', onGameStart)
@@ -145,7 +147,7 @@ function gameAction(timestamp){
     fireballs1.forEach(fireball=>{
         fireball.x += game.speed * game.fireBallMultiplier;
         fireball.style.left = fireball.x + 'px';
-
+        
         if (fireball.x + fireball.offsetWidth > gameArea.offsetWidth){
             fireball.parentElement.removeChild(fireball)
         }
@@ -156,9 +158,21 @@ function gameAction(timestamp){
     fireballs2.forEach(fireball=>{
         fireball.x -= game.speed * game.fireBallMultiplier;
         fireball.style.left = fireball.x + 'px';
-
-        if (fireball.x + fireball.offsetWidth > gameArea.offsetWidth){
+        if (fireball.x + fireball.offsetWidth < 0){
             fireball.parentElement.removeChild(fireball)
+        }
+    })
+
+    fireballs1.forEach(fireball=>{
+        if (isCollision(fireball,wizard2)){
+            fireball.parentElement.removeChild(fireball)
+            firstPlayerWins();
+        }
+    })
+    fireballs2.forEach(fireball=>{
+        if (isCollision(fireball,wizard)){
+            fireball.parentElement.removeChild(fireball)
+            secondPlayerWins();
         }
     })
     
@@ -186,14 +200,13 @@ function gameAction(timestamp){
     scene.score ++;
     points.textContent = scene.score;
 
-    if (!scene.isActiveGame){
+    if (scene.isActiveGame){
         window.requestAnimationFrame(gameAction)
     }
-    window.requestAnimationFrame(gameAction)
+    //window.requestAnimationFrame(gameAction)
 }
 
 function addFireBall(player,wizard){
-    console.log(player.classList)
     let fireBall = document.createElement('div');
     fireBall.classList.add('fire-ball')
     if(wizard.classList.contains('wizard1')){
@@ -221,4 +234,12 @@ function isCollision(firstElement, secondElement){
 function gameOverAction(){
     scene.isActiveGame = false;
     gameOver.classList.remove('hide')
+}
+function firstPlayerWins(){
+    scene.isActiveGame = false;
+    firstPlayer.classList.remove('hide')
+}
+function secondPlayerWins(){
+    scene.isActiveGame = false;
+    secondPlayer.classList.remove('hide')
 }
