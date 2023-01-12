@@ -9,18 +9,23 @@ let secondPlayerHealth = gameScore.querySelector(".second-player-health")
 let firstPlayerName = gameScore.querySelector("#firstPlayerName");
 let secondPlayerName = gameScore.querySelector("#secondPlayerName");
 let choosingNamesSection = document.querySelector('.choosing-names')
+let firstPlayerHealthBar = document.getElementsByClassName('player-healthbar')[0];
+let secondPlayerHealthBar = document.getElementsByClassName('player-healthbar')[1];
+let playAgain = document.querySelector('.play-again')
 
 let firstPlayerNameInput = document.getElementById('firstPlayerNameInput');
 let secondPlayerNameInput = document.getElementById('secondPlayerNameInput');
 
 
 gameStart.addEventListener('click', onGameStart)
+//playAgain.addEventListener('click', onGameStart)
 
 document.addEventListener('keydown', onKeyDown)
 document.addEventListener('keyup', onKeyUp)
 let keys = {};
 let player = {
-    health: 20,
+    health: 100,
+    healthBarWidth: 200,
     x:150,
     y:100,
     height: 0,
@@ -29,6 +34,7 @@ let player = {
 }
 let player2 = {
     health: 100,
+    healthBarWidth: 200,
     x:1150,
     y:100,
     height: 0,
@@ -36,7 +42,7 @@ let player2 = {
     lastTimeFiredFireball: 0
 }
 let game = {
-    damage: 100,
+    damage: 20,
     speed: 2,
     movingMultiplayer: 4,
     fireBallMultiplier: 5,
@@ -57,8 +63,10 @@ function onGameStart(){
     let secondPlayerNameValue = secondPlayerNameInput.value;
     secondPlayerName.textContent = secondPlayerNameValue;
     player2.name = secondPlayerNameValue;
+
     gameStart.classList.add('hide')
     choosingNamesSection.classList.add('hide')
+    playAgain.classList.add('hide')
 
     let wizard = document.createElement('div')
     wizard.classList.add('wizard')
@@ -222,19 +230,25 @@ function gameOverAction(){
 }
 function firstPlayerHit(){
     player2.health -= game.damage;
+    player2.healthBarWidth -= 40;
+    secondPlayerHealthBar.style.width = player2.healthBarWidth + "px";
     secondPlayerHealth.textContent = player2.health
     if(player2.health === 0){
         scene.isActiveGame = false;
         firstPlayerWinner.textContent = player.name + " wins !!!"
         firstPlayerWinner.classList.remove('hide')
+        //playAgain.classList.remove('hide')
     }
 }
 function secondPlayerHit(){
     player.health -= game.damage;
+    player.healthBarWidth -= 40;
+    firstPlayerHealthBar.style.width = player.healthBarWidth + 'px'
     firstPlayerHealth.textContent = player.health
     if(player.health === 0){
         scene.isActiveGame = false;
         secondPlayerWinner.textContent = player2.name + " wins !!!"
         secondPlayerWinner.classList.remove('hide')
+        //playAgain.classList.remove('hide')
     }
 }
